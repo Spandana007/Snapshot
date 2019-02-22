@@ -1,9 +1,9 @@
-
 import java.awt.*;
+
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -20,7 +20,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 * This program demonstrates how to capture screenshot of a portion of screen.
 * 
 */
-public class SandboxSnapshot extends JFrame {
+/**
+ * @author co26350
+ *
+ */
+/**
+ * @author co26350
+ *
+ */
+public class SandboxSnapshot  {
  
    /**
 	 * 
@@ -30,65 +38,55 @@ public class SandboxSnapshot extends JFrame {
     * 
     */
 	
-	JButton GetSnapshotButton;
-	JLabel savesnapshotLabel;
+	
+	JFileChooser fs;
 	
 	
     public SandboxSnapshot(){
-    GetSnapshotButton=new JButton("Get Snapshot");
-    GetSnapshotButton.setBounds(300,0,300,50);
-    add(GetSnapshotButton);
-    
-    
-    
-    GetSnapshotButton.addActionListener(new ActionListener(){
-    	
-    	public void actionPerformed(ActionEvent e) 
-    	{
+    	  //fs=new JFileChooser();
+    	  
+   
     		try {
-    		     /*
-    		      * Let the program wait for 5 seconds to allow you to open the
-    		      * window whose screenshot has to be captured
-    		      */
-    		      Thread.sleep(5000);
-    		      Robot robot = new Robot();
-    		     // String fileName = "C://PartScreenshot.jpg";
-
     		     
-    		      Rectangle rectArea = new Rectangle(10, 50, 500, 400);
-    		      BufferedImage screenFullImage = robot.createScreenCapture(rectArea);
-    		     // ImageIO.write(screenFullImage, "jpg", new File(fileName));
-
     		      
-    		      
-    		      JOptionPane waitPane = new JOptionPane("Snapshot is captured successfully", JOptionPane.INFORMATION_MESSAGE);
-    		      JDialog waitDialog = waitPane.createDialog(null, "Capture snapshot");
-    		      waitDialog.setVisible(true);
-    		      JFileChooser fs=new JFileChooser();
-    		      fs.setCurrentDirectory(new File("C:\\"));
-    		      fs.setFileFilter(new FileNameExtensionFilter("JPEG images","jpeg","jpg"));
-    		      fs.setDialogTitle("Save Snapshot");
-    		     // fs.setFileFilter(new FileTypeFilter(".jpeg"," JPEG file"));
-    		      String path = "C:// Shot.jpg";
-    		      int result=fs.showSaveDialog(null);
-    		      if(result==JFileChooser.APPROVE_OPTION)
+    			
+    		      		     
+    		     
+    			 fs=new JFileChooser();
+    	            String fileName=getWheretoSave();
+      		      
+       		     
+      		      
+      		      fs.setDialogTitle("Save Snapshot");
+    		        
+    		    
+    		      if(fileName.toLowerCase().endsWith(".jpg"))
     		      {
     		    	  
+
+    		    	  //Thread.sleep(2000);
+        		      Robot robot = new Robot();
+        		    
+        		      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        	            screenSize.width=750;
+        	            screenSize.height=500;
+        	            Rectangle rectArea = new Rectangle(0, 350, screenSize.width, screenSize.height);
+        	            BufferedImage screenFullImage = robot.createScreenCapture(rectArea);
+        		         ImageIO.write(screenFullImage, "jpg", new File(fileName));
+        		         System.out.println("Screenshot is captured");
+        		         JOptionPane.showMessageDialog(null, "Screen saved successfully.",null, 1);
+        		         
+    		    	 
+    		      }
+    		      
+    		      else
+    		      {
     		    	  
-    		    	  try{
-    		    		 // ImageIO.write(screenFullImage, ".jpeg", fs.getSelectedFile());
-    		    		  ImageIO.write(screenFullImage, ".jpeg", new File(path));
-    		    		  JOptionPane waitPane1 = new JOptionPane("Snapshot is saved successfully", JOptionPane.INFORMATION_MESSAGE);
-    		    		  JDialog waitDialog1 = waitPane1.createDialog(null, "Saved Snapshot");
-    		    		  waitDialog1.setVisible(true);
-    		    	  }
-    		    	  catch(Exception e2)
-    		    	  {
-    		    		  
-    		    		  JOptionPane waitPane2 = new JOptionPane("Failed to save snapshot", JOptionPane.INFORMATION_MESSAGE);
-    		    		  JDialog waitDialog2 = waitPane2.createDialog(null, "Failed message");
-    		    		  waitDialog2.setVisible(true);
-    		    	  }
+        		         JOptionPane.showMessageDialog(null, "Error: file name must end with \".jpg\".",
+      		    	           null, 1); 
+        		         
+        		        new SandboxSnapshot();
+    		    	  
     		      }
     		      
     		      
@@ -97,24 +95,55 @@ public class SandboxSnapshot extends JFrame {
     		      
     		      
     		  } 
-    		  catch (AWTException | InterruptedException ex) 
+    		  catch (AWTException | NullPointerException ex) 
     		  {
     		           System.err.println(ex);
-    		  }
+    		  } catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
     		
-   		    
+   		      
     		
     	 
     	}
+
+		String getWheretoSave() {
+			// TODO Auto-generated method stub
+			int retVal=fs.showSaveDialog(null);
+			File file = null;
+			if(retVal==JFileChooser.APPROVE_OPTION)
+			
+			{
+			    file=fs.getSelectedFile();
+				if(file.exists())
+				{
+					JOptionPane.showMessageDialog(null, "Cannot have a file with same filename. Rename the file",
+   		    	           null, 1); 
+					
+					
+     		     
+				}	
+				else if(!file.exists())
+				{
+					return file.getAbsolutePath();
+				}
+				
+				
+			}
+			
+			
+			return file.getAbsolutePath();
+				
+				
+				
+			
+			
+		}
     
-    });
     
-    setLayout(null);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setLocationRelativeTo(null);
-    setSize(700,400);
-    setVisible(true);
- }
+    
+   
     
     
      public static void main(String[] args) 
@@ -125,4 +154,3 @@ public class SandboxSnapshot extends JFrame {
            
      }
     }
-
